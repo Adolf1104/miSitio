@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empoderadas Marketplace</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+        }
+        header {
+            background-color: #f8e1e9;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #d81e5b;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .banner {
+            background-color: #fce4ec;
+            text-align: center;
+            padding: 50px;
+        }
+        .banner h1 {
+            color: #d81e5b;
+        }
+        .categories {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        .category {
+            width: 30%;
+            background-color: #fff0f5;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .offers {
+            background-color: #f8e1e9;
+            padding: 20px;
+            text-align: center;
+        }
+        footer {
+            background-color: #d81e5b;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        button {
+            background-color: #d81e5b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #b0154a;
+        }
+        #cart, #service-booking, #advisory-booking {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #d81e5b;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de Navegación -->
+    <header>
+        <div class="logo">
+            <h2>Empoderadas Marketplace</h2>
+        </div>
+        <nav>
+            <a href="#ventas">Ventas</a>
+            <a href="#servicios">Servicios</a>
+            <a href="#asesoria">Asesoría</a>
+            <a href="#" onclick="showCart()">Carrito (<span id="cart-count">0</span>)</a>
+            <a href="#">Perfil</a>
+        </nav>
+    </header>
+
+    <!-- Banner Principal -->
+    <div class="banner">
+        <h1>¡Todo lo que necesitas está aquí!</h1>
+        <p>Ventas, Servicios y Asesoría para mujeres como tú.</p>
+        <button onclick="scrollToCategories()">Explora ahora</button>
+    </div>
+
+    <!-- Sección de Categorías -->
+    <div class="categories" id="categories">
+        <div class="category" id="ventas">
+            <h3>Ventas</h3>
+            <p>Productos pensados para ti: belleza, estilo y bienestar.</p>
+            <ul>
+                <li>Paleta de sombras Glam - $35 <button onclick="addToCart('Paleta de sombras Glam', 35)">Añadir</button></li>
+                <li>Vestido floral midi - $60 <button onclick="addToCart('Vestido floral midi', 60)">Añadir</button></li>
+            </ul>
+        </div>
+        <div class="category" id="servicios">
+            <h3>Servicios</h3>
+            <p>Servicios que te facilitan la vida y te hacen brillar.</p>
+            <ul>
+                <li>Manicura a domicilio - $25 <button onclick="bookService('Manicura a domicilio', 25)">Reservar</button></li>
+                <li>Sesión de yoga - $40 <button onclick="bookService('Sesión de yoga', 40)">Reservar</button></li>
+            </ul>
+        </div>
+        <div class="category" id="asesoria">
+            <h3>Asesoría</h3>
+            <p>Apoyo experto para tus metas, sueños y desafíos.</p>
+            <ul>
+                <li>Consulta para negocio - $80 <button onclick="bookAdvisory('Consulta para negocio', 80)">Agendar</button></li>
+                <li>Asesoría de imagen - $65 <button onclick="bookAdvisory('Asesoría de imagen', 65)">Agendar</button></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Ofertas del Día -->
+    <div class="offers">
+        <h2>Ofertas del Día</h2>
+        <p>Kit de skincare - 25% descuento | Masaje relajante - 20% off | Primera sesión de coaching gratis</p>
+    </div>
+
+    <!-- Carrito -->
+    <div id="cart">
+        <h3>Carrito de Compras</h3>
+        <ul id="cart-items"></ul>
+        <p>Total: $<span id="cart-total">0</span></p>
+        <button onclick="checkout()">Finalizar Compra</button>
+        <button onclick="hideCart()">Cerrar</button>
+    </div>
+
+    <!-- Reserva de Servicios -->
+    <div id="service-booking">
+        <h3>Reservar Servicio</h3>
+        <p>Servicio: <span id="service-name"></span></p>
+        <p>Precio: $<span id="service-price"></span></p>
+        <label>Fecha: <input type="date" id="service-date"></label><br>
+        <button onclick="confirmService()">Confirmar</button>
+        <button onclick="hideServiceBooking()">Cerrar</button>
+    </div>
+
+    <!-- Agendamiento de Asesoría -->
+    <div id="advisory-booking">
+        <h3>Agendar Asesoría</h3>
+        <p>Asesoría: <span id="advisory-name"></span></p>
+        <p>Precio: $<span id="advisory-price"></span></p>
+        <label>Fecha: <input type="date" id="advisory-date"></label><br>
+        <button onclick="confirmAdvisory()">Confirmar</button>
+        <button onclick="hideAdvisoryBooking()">Cerrar</button>
+    </div>
+
+    <!-- Pie de Página -->
+    <footer>
+        <p><a href="#mision" style="color: white;">Nuestra misión: Empoderar a las mujeres</a> | <a href="#contacto" style="color: white;">Contacto</a> | <a href="#politicas" style="color: white;">Políticas de privacidad</a></p>
+        <p>Síguenos en: <a href="https://x.com" target="_blank" style="color: white;">X</a> | <a href="https://instagram.com" target="_blank" style="color: white;">Instagram</a> | <a href="https://pinterest.com" target="_blank" style="color: white;">Pinterest</a></p>
+        <p>Suscríbete para tips y ofertas: <input type="email" id="email-sub" placeholder="Tu email"><button onclick="subscribe()">Enviar</button></p>
+    </footer>
+
+    <!-- JavaScript para funcionalidad completa -->
+    <script>
+        let cart = [];
+        let cartTotal = 0;
+
+        // Funciones del Carrito
+        function addToCart(itemName, price) {
+            cart.push({ name: itemName, price: price });
+            cartTotal += price;
+            document.getElementById('cart-count').textContent = cart.length;
+            alert(`${itemName} añadido al carrito.`);
+        }
+
+        function showCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - $${item.price}`;
+                cartItems.appendChild(li);
+            });
+            document.getElementById('cart-total').textContent = cartTotal;
+            document.getElementById('cart').style.display = 'block';
+        }
+
+        function hideCart() {
+            document.getElementById('cart').style.display = 'none';
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('El carrito está vacío.');
+            } else {
+                alert(`Compra finalizada. Total: $${cartTotal}. ¡Gracias por tu compra!`);
+                cart = [];
+                cartTotal = 0;
+                document.getElementById('cart-count').textContent = '0';
+                hideCart();
+            }
+        }
+
+        // Funciones de Servicios
+        function bookService(serviceName, price) {
+            document.getElementById('service-name').textContent = serviceName;
+            document.getElementById('service-price').textContent = price;
+            document.getElementById('service-booking').style.display = 'block';
+        }
+
+        function hideServiceBooking() {
+            document.getElementById('service-booking').style.display = 'none';
+        }
+
+        function confirmService() {
+            const date = document.getElementById('service-date').value;
+            if (!date) {
+                alert('Por favor, selecciona una fecha.');
+            } else {
+                alert(`Servicio ${document.getElementById('service-name').textContent} reservado para el ${date}.`);
+                hideServiceBooking();
+            }
+        }
+
+        // Funciones de Asesoría
+        function bookAdvisory(advisoryName, price) {
+            document.getElementById('advisory-name').textContent = advisoryName;
+            document.getElementById('advisory-price').textContent = price;
+            document.getElementById('advisory-booking').style.display = 'block';
+        }
+
+        function hideAdvisoryBooking() {
+            document.getElementById('advisory-booking').style.display = 'none';
+        }
+
+        function confirmAdvisory() {
+            const date = document.getElementById('advisory-date').value;
+            if (!date) {
+                alert('Por favor, selecciona una fecha.');
+            } else {
+                alert(`Asesoría ${document.getElementById('advisory-name').textContent} agendada para el ${date}.`);
+                hideAdvisoryBooking();
+            }
+        }
+
+        // Otras Funciones
+        function scrollToCategories() {
+            document.getElementById('categories').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function subscribe() {
+            const email = document.getElementById('email-sub').value;
+            if (email) {
+                alert(`Gracias por suscribirte, ${email}!`);
+                document.getElementById('email-sub').value = '';
+            } else {
+                alert('Por favor, ingresa un email.');
+            }
+        }
+    </script>
+</body>
+</html>
